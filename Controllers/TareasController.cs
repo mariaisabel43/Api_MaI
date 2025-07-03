@@ -5,10 +5,10 @@ using PruebaApi.Models;
 
 namespace PruebaApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TareaController : ControllerBase
-    {
-        [Route("api/[controller]")]
-        [ApiController]
+    {        
         public class TareasController : ControllerBase
         {
             private readonly AppDbContext _context;
