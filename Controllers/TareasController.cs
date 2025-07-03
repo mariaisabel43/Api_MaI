@@ -9,51 +9,48 @@ namespace PruebaApi.Controllers
     [ApiController]
     public class TareaController : ControllerBase
     {        
-        public class TareasController : ControllerBase
+        private readonly AppDbContext _context;
+
+        public TareasController(AppDbContext context)
         {
-            private readonly AppDbContext _context;
+            _context = context;
+        }
 
-            public TareasController(AppDbContext context)
-            {
-                _context = context;
-            }
+        // GET: api/<TareasController>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var tareas = await _context.Tareas.ToListAsync();
+            return Ok(tareas);
+        }
 
-            // GET: api/<TareasController>
-            [HttpGet]
-            public async Task<IActionResult> GetAll()
-            {
-                var tareas = await _context.Tareas.ToListAsync();
-                return Ok(tareas);
-            }
+       // GET api/<TareasController>/5
+       [HttpGet("{id}")]
+       public async Task<IActionResult> Get(int id)
+       {
+       var tarea = await _context.Tareas.FindAsync(id);
+       if (tarea == null) return NotFound();
+           return Ok(tarea);
+       }
 
-            // GET api/<TareasController>/5
-            [HttpGet("{id}")]
-            public async Task<IActionResult> Get(int id)
-            {
-                var tarea = await _context.Tareas.FindAsync(id);
-                if (tarea == null) return NotFound();
-                return Ok(tarea);
-            }
+       // POST api/<TareasController>
+       [HttpPost]
+       public async Task<IActionResult> PostCrear([FromBody] Tarea tarea)
+       {
+           if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // POST api/<TareasController>
-            [HttpPost]
-            public async Task<IActionResult> PostCrear([FromBody] Tarea tarea)
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                // Se ignora cualquier valor que venga en tarea.Id
                 _context.Tareas.Add(tarea);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(Get), new { id = tarea.Id }, tarea);
-            }
+            return CreatedAtAction(nameof(Get), new { id = tarea.Id }, tarea);
+        }
 
-            // PUT api/<TareasController>/5
-            [HttpPut("{id}")]
-            public async Task<IActionResult> PutActualizar(int id, [FromBody] Tarea tarea)
-            {
-                if (id != tarea.Id) return BadRequest();
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+        // PUT api/<TareasController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutActualizar(int id, [FromBody] Tarea tarea)
+        {
+            if (id != tarea.Id) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
                 _context.Entry(tarea).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -119,5 +116,5 @@ namespace PruebaApi.Controllers
                 return Ok(tareas);
             }
         }
-    }
+    
 }
