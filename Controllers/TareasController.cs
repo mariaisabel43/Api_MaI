@@ -11,7 +11,7 @@ namespace PruebaApi.Controllers
     {        
         private readonly AppDbContext _context;
 
-        public TareasController(AppDbContext context)
+        public TareaController(AppDbContext context)
         {
             _context = context;
         }
